@@ -1,24 +1,11 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
-import {
-  useParams,
-  useNavigate,
-  useLocation,
-  Routes,
-  Route,
-  Link,
-} from 'react-router-dom';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { Circles } from 'react-loader-spinner';
 import { fetchMovieDetails } from 'api/Api';
 import s from './MovieDetailsPage.module.css';
 
-const Cast = lazy(() => import('../Cast/Cast' /* webpackChunkName: 'cast' */));
-const Reviews = lazy(() =>
-  import('../Reviews/Reviews' /* webpackChunkName: 'reviews' */)
-);
-
 const MovieDetailsPage = () => {
   const { slug } = useParams();
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,15 +14,8 @@ const MovieDetailsPage = () => {
   const [error, setError] = useState(null);
   const movieId = slug.match(/[a-z0-9]+$/)[0];
 
-  const {
-    poster_path,
-
-    title,
-    release_date,
-    vote_average,
-    overview,
-    genres,
-  } = movieData;
+  const { poster_path, title, release_date, vote_average, overview, genres } =
+    movieData;
 
   useEffect(() => {
     if (movieId === '') {
@@ -106,14 +86,14 @@ const MovieDetailsPage = () => {
           <hr />
           <p>Additional information</p>
           <Link
-            to={`./cast`}
+            to={`cast`}
             state={{ from: location?.state?.from ?? '/' }}
             className={s.castLink}
           >
             Cast
           </Link>
           <Link
-            to={`./reviews`}
+            to={`reviews`}
             state={{ from: location?.state?.from ?? '/' }}
             className={s.reviewsLink}
           >
@@ -131,15 +111,7 @@ const MovieDetailsPage = () => {
                 timeout={2000}
               />
             }
-          >
-            <Routes>
-              <Route path="cast/*" element={<Cast movieId={movieId} />}></Route>
-              <Route
-                path="reviews/*"
-                element={<Reviews movieId={movieId} />}
-              ></Route>
-            </Routes>
-          </Suspense>
+          ></Suspense>
         </>
       )}
 

@@ -12,8 +12,12 @@ const Cast = ({ movieId }) => {
     if (movieId) {
       setStatus('pending');
       fetchMovieCredits(movieId)
-        .then(response => setCast(response.cast), setStatus('resolved'))
-        .catch(error => setError(error));
+        .then(response => setCast(response.cast || []))
+        .then(() => setStatus('resolved'))
+        .catch(error => {
+          setError(error);
+          setStatus('rejected');
+        });
     }
   }, [movieId]);
 
@@ -28,7 +32,7 @@ const Cast = ({ movieId }) => {
           timeout={2000}
         />
       )}
-      {status === 'resolved' && cast && (
+      {status === 'resolved' && Array.isArray(cast) && cast.length > 0 ? (
         <ul>
           {cast.map(({ id, profile_path, name, character }) => (
             <li key={id}>
@@ -37,7 +41,7 @@ const Cast = ({ movieId }) => {
                 src={
                   profile_path
                     ? `https://image.tmdb.org/t/p/w342${profile_path}`
-                    : 'URL_TO_YOUR_DEFAULT_IMAGE' // Provide the URL to your default image here
+                    : 'URL_TO_YOUR_DEFAULT_IMAGE'
                 }
                 alt="actor"
               />
@@ -46,10 +50,9 @@ const Cast = ({ movieId }) => {
             </li>
           ))}
         </ul>
-      )}
-      {status === 'resolved' && cast.length === 0 && (
+      ) : status === 'resolved' && cast && cast.length === 0 ? (
         <p>There is no cast for this movie</p>
-      )}
+      ) : null}
       {status === 'rejected' && <h1>{error && error.message} </h1>}
     </>
   );
