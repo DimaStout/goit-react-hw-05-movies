@@ -1,34 +1,49 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { fetchMovieReviews } from 'api/Api'; // Замініть на вірний шлях до Api.js
+import s from './Reviews.module.css';
 
-import { fetchMovieReviews } from 'api/Api';
-
-const Reviews = ({ movieId }) => {
-  // const { path } = useMatch();
+const Reviews = () => {
+  const { id } = useParams();
   const [reviews, setReviews] = useState([]);
-  const [status, setStatus] = useState('idle');
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMovieReviews(movieId)
-      .then(response => setReviews(response.results), setStatus('resolved'))
-      .catch(error => setError(error));
-  }, [movieId]);
+    const fetchMovieReviewsData = async () => {
+      try {
+        const response = await fetchMovieReviews(id);
+        if (Array.isArray(response)) {
+          setReviews(response);
+        } else {
+          setReviews([]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMovieReviewsData();
+  }, [id]);
+
   return (
     <>
-      {status === 'resolved' && reviews && (
-        <ul>
-          {reviews.map(({ id, author, content }) => (
-            <li key={id}>
-              <h3>{author}</h3>
-              <p>{content}</p>
-            </li>
-          ))}
-        </ul>
+      {reviews.length !== 0 && (
+        <div className={s.reviewsContainer}>
+          <h2 className={s.reviewsTitle}>Movie Reviews</h2>
+          <ul className={s.reviewsList}>
+            {reviews.map(review => (
+              <li key={review.id} className={s.reviewItem}>
+                <p className={s.reviewAuthor}>{review.author}</p>
+                <p className={s.reviewContent}>{review.content}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
-      {status === 'resolved' && reviews.length === 0 && (
-        <p>There is no reviews for this movie</p>
+      {reviews.length === 0 && (
+        <div className={s.noReviews}>
+          There are no reviews available for this movie.
+        </div>
       )}
-      {status === 'rejected' && <h1>{error && error.message} </h1>}
     </>
   );
 };

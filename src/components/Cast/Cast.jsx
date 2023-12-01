@@ -1,59 +1,60 @@
-import { useState, useEffect } from 'react';
-import { Circles } from 'react-loader-spinner';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { fetchMovieCredits } from '../../api/Api';
+import nophoto from '../../Images/nophoto.jpg';
 import s from './Cast.module.css';
 
-const Cast = ({ movieId }) => {
+const Cast = () => {
+  const { id } = useParams();
   const [cast, setCast] = useState([]);
-  const [status, setStatus] = useState('idle');
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (movieId) {
-      setStatus('pending');
-      fetchMovieCredits(movieId)
-        .then(response => setCast(response.cast || []))
-        .then(() => setStatus('resolved'))
-        .catch(error => {
-          setError(error);
-          setStatus('rejected');
-        });
-    }
-  }, [movieId]);
+    const movieCast = async () => {
+      try {
+        const response = await fetchMovieCredits(id);
+        if (Array.isArray(response)) {
+          setCast(response);
+        } else {
+          setCast([]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    movieCast();
+  }, [id]);
 
   return (
     <>
-      {status === 'pending' && (
-        <Circles
-          type="Circles"
-          color="#2196f3"
-          height={70}
-          width={70}
-          timeout={2000}
-        />
+      {cast.length !== 0 && (
+        <div className={s.castContainer}>
+          <h2 className={s.castTitle}>Movie Cast</h2>
+          <ul className={s.castList}>
+            {cast.map(actor => (
+              <li key={actor.id} className={s.castItem}>
+                <img
+                  width="200px"
+                  height="300px"
+                  className={s.castImage}
+                  src={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w300${actor.profile_path}`
+                      : `${nophoto}`
+                  }
+                  alt={actor.original_name}
+                />
+                <p className={s.castName}>{actor.name}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
-      {status === 'resolved' && Array.isArray(cast) && cast.length > 0 ? (
-        <ul>
-          {cast.map(({ id, profile_path, name, character }) => (
-            <li key={id}>
-              <img
-                className={s.actorPhoto}
-                src={
-                  profile_path
-                    ? `https://image.tmdb.org/t/p/w342${profile_path}`
-                    : 'URL_TO_YOUR_DEFAULT_IMAGE'
-                }
-                alt="actor"
-              />
-              <p> {name}</p>
-              <p>Character: {character}</p>
-            </li>
-          ))}
-        </ul>
-      ) : status === 'resolved' && cast && cast.length === 0 ? (
-        <p>There is no cast for this movie</p>
-      ) : null}
-      {status === 'rejected' && <h1>{error && error.message} </h1>}
+      {cast.length === 0 && (
+        <div className={s.noCastMessage}>
+          We haven't finalized the cast for this movie yet.
+        </div>
+      )}
     </>
   );
 };
