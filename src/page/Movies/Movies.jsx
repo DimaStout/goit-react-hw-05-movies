@@ -19,7 +19,7 @@ export default function Movies() {
     const fetchData = async () => {
       try {
         const data = await searchMoviesByKeyword(searchParams.get('query'));
-        setSearchMovies(data);
+        setSearchMovies(data.results);
       } catch (error) {
         console.error(error);
       }
@@ -31,8 +31,9 @@ export default function Movies() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (inputChange.trim() !== '') {
+    if (inputChange.trim() === '') {
       setSearchParams({ query: inputChange.trim() });
+      alert('Enter the title of the movie');
     }
 
     e.target.reset();

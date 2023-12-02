@@ -2,7 +2,9 @@ import { fetchTrendingMovies } from '../../api/Api';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import s from './Similar.module.css';
-import noposter from '../../Images/noposter.png';
+
+const defaultImg =
+  '<https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700>';
 
 const Similar = () => {
   const { id } = useParams();
@@ -46,7 +48,7 @@ const Similar = () => {
                     src={
                       movie.poster_path
                         ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                        : `${noposter}`
+                        : `${defaultImg}`
                     }
                     alt={movie.title}
                   />

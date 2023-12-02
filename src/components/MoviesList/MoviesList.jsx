@@ -1,8 +1,10 @@
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import noposter from '../../Images/noposter.png';
 import s from './MoviesList.module.css';
 import PropTypes from 'prop-types';
+
+const defaultImg =
+  '<https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700>';
 
 export default function MoviesList({ searchMovies }) {
   const location = useLocation();
@@ -24,7 +26,7 @@ export default function MoviesList({ searchMovies }) {
               src={
                 movie.poster_path
                   ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                  : `${noposter}`
+                  : `${defaultImg}`
               }
               alt={movie.title}
               height="446px"

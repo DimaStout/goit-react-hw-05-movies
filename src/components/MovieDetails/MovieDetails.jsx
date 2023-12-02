@@ -1,6 +1,8 @@
 import s from './MovieDetails.module.css';
-import noposter from '../../Images/noposter.png';
 import PropTypes from 'prop-types';
+
+const defaultImg =
+  '<https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700>';
 
 export function MovieDetalis({ movie }) {
   return (
@@ -9,7 +11,7 @@ export function MovieDetalis({ movie }) {
         src={
           movie.poster_path
             ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-            : `${noposter}`
+            : `${defaultImg}`
         }
         alt=""
         width="400px"

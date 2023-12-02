@@ -11,7 +11,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const response = await fetchTrendingMovies();
-        setTrendings(response);
+        setTrendings(response.results);
       } catch (error) {
         console.error(error);
       }
@@ -23,9 +23,7 @@ export default function Home() {
   return (
     <div className={s.trendingDiv}>
       <h1 className={s.treandingHeading}>Popular today</h1>
-      <ul className={s.trendingUl}>
-        {trendings.length > 0 && <HomeList trendings={trendings} />}
-      </ul>
+      {trendings.length > 0 && <HomeList trendings={trendings} />}
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchMovieCredits } from '../../api/Api';
-import nophoto from '../../Images/nophoto.jpg';
 import s from './Cast.module.css';
+
+const defaultImg =
+  'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
 
 const Cast = () => {
   const { id } = useParams();
@@ -40,7 +42,7 @@ const Cast = () => {
                   src={
                     actor.profile_path
                       ? `https://image.tmdb.org/t/p/w300${actor.profile_path}`
-                      : `${nophoto}`
+                      : `${defaultImg}`
                   }
                   alt={actor.original_name}
                 />
