@@ -32,9 +32,10 @@ export default function Movies() {
     e.preventDefault();
 
     if (inputChange.trim() === '') {
-      setSearchParams({ query: inputChange.trim() });
       alert('Enter the title of the movie');
     }
+
+    setSearchParams({ query: inputChange.trim() });
 
     e.target.reset();
   }

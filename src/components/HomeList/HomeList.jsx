@@ -11,7 +11,6 @@ export function HomeList({ trendings }) {
         {trendings.map(trending => {
           return (
             <li key={trending.id} className={s.trendingLi}>
-              {console.log(trending)}
               <Link to={`movies/${trending.id}`} state={{ from: location }}>
                 <img
                   src={`https://image.tmdb.org/t/p/w500${trending.backdrop_path}`}
